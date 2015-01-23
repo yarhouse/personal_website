@@ -1,9 +1,0 @@
-{
-  "name": "aaronyarhouse",
-  "private": true,
-  "description": "personal_website",
-  "repository": "git@github.com:yarhouse/personal_website.git",
-  "scripts": {
-    "start": "http-server -p 8000"
-  }
-}

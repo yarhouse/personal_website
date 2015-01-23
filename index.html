@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" ng-app="webPortfolio">
   <head>
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -9,27 +9,66 @@
 
     <title>Aaron Yarhouse (@yarhouse)</title>
 
-    <script scr="js/angular.js" ></script>
-    <script scr="js/angular-animate.js" ></script>
-    <script scr="js/angular-aria.js" ></script>
-    <script scr="js/angular-cookies.js" ></script>
-    <script scr="js/angular-loader.js" ></script>
-    <script scr="js/angular-messages.js" ></script>
-    <script scr="js/angular-mocks.js" ></script>
-    <script scr="js/angular-resource.js" ></script>
-    <script scr="js/angular-route.js" ></script>
-    <script scr="js/angular-sanitize.js" ></script>
-    <script scr="js/angular-scenario.js" ></script>
-    <script scr="js/angular-touch.js" ></script>
+    <script src="js/angular/angular.js" type="text/javascript"></script>
+    <script src="js/angular/angular-animate.js" type="text/javascript"></script>
+    <script src="js/angular/angular-aria.js" type="text/javascript"></script>
+    <script src="js/angular/angular-cookies.js" type="text/javascript"></script>
+    <script src="js/angular/angular-loader.js" type="text/javascript"></script>
+    <script src="js/angular/angular-messages.js" type="text/javascript"></script>
+    <script src="js/angular/angular-mocks.js" type="text/javascript"></script>
+    <script src="js/angular/angular-resource.js" type="text/javascript"></script>
+    <script src="js/angular/angular-route.js" type="text/javascript"></script>
+    <script src="js/angular/angular-sanitize.js" type="text/javascript"></script>
+    <script src="js/angular/angular-scenario.js" type="text/javascript"></script>
+    <script src="js/angular/angular-touch.js" type="text/javascript"></script>
+    <script src="js/angular/ui-bootstrap-tpls-0.12.0.js" type="text/javascript"></script>
+    <script src="js/angular/ui-utils.js" type="text/javascript"></script>
+    <script src="js/angular/ui-utils-ieshiv.js" type="text/javascript"></script>
+    <script src="js/angular/ng-table.js" type="text/javascript"></script>
+    <script src="js/angular/scrollfix.js" type="text/javascript"></script>
+
+    <script src="js/app.js" type="text/javascript"></script>
+    <script src="js/controllers.js" type="text/javascript"></script>
+    <script src="js/directives.js" type="text/javascript"></script>
+    <script src="js/filters.js" type="text/javascript"></script>
+    <script src="js/services.js" type="text/javascript"></script>
+
+    <script src="https://code.jquery.com/jquery.js" type="text/javascript"></script>
+    <script src="js/footable/footable.js" type="text/javascript"></script>
+    <script src="js/footable/footable.sort.js" type="text/javascript"></script>
+    <script src="js/footable/footable.filter.js" type="text/javascript"></script>
+    <script src="js/footable/footable.paginate.js" type="text/javascript"></script>
+
+    <script src="js/counter_handler.js" type="text/javascript"></script>
+    <!-- <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.1/js/bootstrap.min.js"></script> -->
 
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.1/css/bootstrap.min.css">
     <link href='http://fonts.googleapis.com/css?family=Aldrich|Cuprum:400italic,400' rel='stylesheet' type='text/css'>
     <link href='http://fonts.googleapis.com/css?family=Roboto:400,400italic,500,500italic,700,700italic,900,900italic' rel='stylesheet' type='text/css'>
     <link href="http://maxcdn.bootstrapcdn.com/font-awesome/4.2.0/css/font-awesome.min.css" rel="stylesheet">
-    <link href="css/application.css" media="screen" rel="stylesheet" type="text/css">
+    <link href="css/style.less" rel="stylesheet/less" type="text/css">
+    <!-- <link href="css/application.css" media="screen" rel="stylesheet" type="text/css"> -->
     <link href="css/footable.core.css" media="screen" rel="stylesheet" type="text/css">
+
+    <!-- LESS always last -->
+    <script src="js/less-1.7.0.js" type="text/javascript"></script>
+
+    <script type="text/javascript">
+      $(function() {
+        var banner = $(".jumbotron.banner").innerHeight();
+        console.log(banner);
+        $('.footable').footable();
+        $(".opaque").height(banner);
+        $(".image").height(banner);
+        $( window ).resize(function() {
+          banner = $(".jumbotron.banner").innerHeight();
+          $(".opaque").height(banner);
+          $(".image").height(banner);
+        });
+      });
+    </script>
   </head>
-  <body>
+  <body ng-controller="ApplicationCtrl">
     <div class="jumbotron banner">
       <div class="container">
         <h1>Aaron <span>Yarhouse</span></h1>
@@ -39,20 +78,29 @@
     </div>
     <div class="image"></div>
     <div class="opaque"></div>
-    <div class="progress" id="bar">
-      <div class="progress-bar progress-bar-info" style="width: 25%"></div>
-      <div class="progress-bar progress-bar-success" style="width: 25%"></div>
-      <div class="progress-bar progress-bar-warning" style="width: 25%"></div>
-      <div class="progress-bar progress-bar-danger" style="width: 25%"></div>
+    <div ui-scrollfix="+0" id="sticky" class="container-fluid">
+      <div class="row">
+        <div class="col-sm-3 progress-bar-info">
+          <a href="" ng-click="scrollTo('profile')">Profile</a>
+        </div>
+        <div class="col-sm-3 progress-bar-success">
+          <a href="" ng-click="scrollTo('technical')">Technical</a>
+        </div>
+        <div class="col-sm-3 progress-bar-warning">
+          <a ng-click="scrollTo('experience')">Experience</a>
+        </div>
+        <div class="col-sm-3 progress-bar-danger">
+          <a ng-click="scrollTo('portfolio')">Portfolio</a>
+        </div>
+      </div>
     </div>
     <div class="container-fluid whitewash">
-
       <div class="container">
-        <div class="row">
+        <div class="row" id="profile">
           <div id="overview" class="col-sm-12 col-md-7 col-lg-6">
             <img src="./img/IMG_20140722_084814.jpg" class="img-circle img-responsive portrait pull-left">
             <p>I've been in love with web design since our family got its first computer in 2000 <small>(my then-step-father was a serious technophobe)</small>. Playing with css and html elements on angelfire or geocities websites was my hobby after school or work, often helping my friends garage bands create their first websites or styling profile pages on the next social media website.</p>
-            <p>I spent much of my 20's as a <abbr class="details" data-toggle="tooltip" title="gla·zier (noun); a person whose profession is fitting glass into windows and doors.">glazier</abbr>, going from one bankrupt shop to the next. After being laid off from a 3rd shop in 2011, I realized my life in construction was going nowhere.<br />With encoragement from friends and family, I took the next year and dedicated myself to learning about UI design and OOP; ruby on rails, responsive css, jquery, rdbms. I had an amazing support system around me as well, and practiced alongside skilled programmers doing exactly what I wanted to achieve.</p>
+            <p>I spent much of my 20's as a <abbr class="details" tooltip="gla·zier (noun); a person whose profession is fitting glass into windows and doors.">glazier</abbr>, going from one bankrupt shop to the next. After being laid off from a 3rd shop in 2011, I realized my life in construction was going nowhere.<br />With encoragement from friends and family, I took the next year and dedicated myself to learning about UI design and OOP; ruby on rails, responsive css, jquery, rdbms. I had an amazing support system around me as well, and practiced alongside skilled programmers doing exactly what I wanted to achieve.</p>
           </div>
           <div id="bits" class="col-xs-12 col-sm-7 col-md-5 col-lg-3">
             <h4><i class="fa fa-coffee fa-border"></i> Little bits</h4>
@@ -347,33 +395,5 @@
         </footer>
       </div> <!-- /container -->
     </div>
-
-    <script src="https://code.jquery.com/jquery.js"></script>
-    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.1/js/bootstrap.min.js"></script>
-
-    <script src="js/footable.js" type="text/javascript"></script>
-    <script src="js/footable.sort.js" type="text/javascript"></script>
-    <script src="js/footable.filter.js" type="text/javascript"></script>
-    <script src="js/footable.paginate.js" type="text/javascript"></script>
-
-    <script type="text/javascript">
-      $(function() {
-        var banner = $(".jumbotron.banner").innerHeight();
-        $('.details').tooltip();
-        $('.footable').footable();
-        $(".opaque").height(banner);
-        $(".image").height(banner);
-        $( window ).resize(function() {
-          banner = $(".jumbotron.banner").innerHeight();
-          $(".opaque").height(banner);
-          $(".image").height(banner);
-        });
-        $('#bar').affix({
-          offset: {
-            top: banner
-          }
-        });
-      });
-    </script>
   </body>
 </html>
