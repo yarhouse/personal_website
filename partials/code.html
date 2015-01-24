@@ -1,0 +1,60 @@
+<div id="code" class="container" ng-controller="CodeCtrl">
+  <h3><i class="fa fa-wrench fa-border"></i> Code Examples</h3>
+  <div class="row">
+    <h4><i class="fa fa-code fa-border"></i> FormatJSON and Highcharts</h4>
+    <div class="col-sm-12 col-md-8">
+      <p>This example is an AngularJS service I had to create to format a large JSON object returned from a GET request. The Ruby server acted as a middleman for the up/down time service that tracked its time in millseconds. While the formating could have been done completely on the server side by a back-end engineer, it wasn't, so it became my task to properly format the data to feed into Highcharts via Javascript.</p>
+      <p>The difficulty came with Highcharts, actually. Since the task was to create a timeline that would present data, I natrually chose a Gantt chart, unaware of how little support Highcharts offered for Gantts (you actaully need an optional Highcharts library to use one).</p>
+      <p></p>
+    </div>
+    <div class="col-sm-12 col-md-4">
+      <p>Feel free to look at the JSON object for a single company with only a few servers, then imagine that for about 100 more. You can view both the pre-formated and the results that feed into the Gantt chart below.</p>
+      <p><span class="btn btn-default" ng-click="consolePrint(orgJson)"><i class="fa fa-print"></i></span> Print original JSON to Developer Tools console</p>
+      <p><span class="btn btn-default" ng-click="consolePrint(newJson)"><i class="fa fa-print"></i></span> Print FormatJSON to Developer Tools console</p>
+      
+    </div>
+    <div class="col-sm-12">
+      <div id='test' data-ng-include data-src="'partials/snipets/formatJson.html'" class="partial-container code_window"></div>
+    </div>
+  </div>
+  <hr />
+  <div class="row">
+    <div class="col-sm-12">
+      <p>This is a sidebar design that I created custom for the Gantt chart, to display the percentage of uptime a server had during a selected date range (non functional in demo). It also allowed left/right highlighting zoom, and when you click on a data point a deeper set of information is passed to this div above the chart, which also would become sticky (like my nav menu) as you scroll down the chart.</p><p>My concept here was to make sure that a user was able to pinpoint the data they'd want to inspect, and pass more information only when they want it instead of being forced to see everything all the time.</p>
+    </div>
+  </div>
+  <div id='timeline_bar' class="row">
+    <div id='timeline_total' class="col-md-2 hidden-sm hidden-xs"></div>
+    <div id='timeline_tooltip' class="col-sm-8 "><h4>Select a datapoint of time to see more information about it</h4></div>
+  </div>
+  <div id="timeline_graph" class="row">
+    <div class="col-xs-4 col-sm-3 col-md-2" style="padding-right:0px">
+      <div class="timeline_labels text-right" ng-repeat="data in allPercentages" style="height:{{labelHeight}}px" >
+        <div class="row" >
+          <div class="col-xs-12">
+            <p class="server_name_wrap details"  tooltip="{{ data.name }}">{{ data.name }}</p>
+          </div>
+        </div>
+        <div class="row">
+          <div class="col-xs-6 col-sm-4 uptime_percent"><span class="uptime_percent">{{ data.uptime_percent }}%</span></div>
+          <div class="col-xs-6 col-sm-8 currently">
+            <span class="hidden-xs">Currently: </span>
+            <i class='fa ' ng-class="{
+              'fa-check-square is_available': data.is_available == true && data.has_data == true, 
+              'fa-minus-circle not_available': data.is_available == false && data.has_data == true,
+              'fa-question': data.has_data == false
+            }"></i> 
+            <i class='fa' ng-class="{ 
+              'fa-cog fa-spin in_maintinence': data.in_maintinence == true && data.has_data == true,
+              'fa-cog no_data': data.in_maintinence == false && data.has_data == true,
+              'fa-question': data.has_data == false
+            }"></i>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="graph col-xs-8 col-sm-9 col-md-10" style="padding-left:0px">       
+      <highchart id="timeline" class="render_chart" config="timelineChartConfig" ></highchart>
+    </div>
+  </div>  
+</div>

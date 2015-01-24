@@ -2,3 +2,4 @@
 *copy.html
 .DS_Store
 /package.json
+/node_modules/

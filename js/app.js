@@ -3,7 +3,13 @@
 // Declare app level module which depends on filters, and services
 angular.module('webPortfolio', [
   'ngRoute',
+  'ngAria',
   'ngAnimate',
+  'ngMessages',
+  'ngResource',
+  'ngSanitize',
+  'highcharts-ng',
+  'ngTouch',
   'webPortfolio.filters',
   'webPortfolio.services',
   'webPortfolio.directives',
@@ -16,25 +22,16 @@ angular.module('webPortfolio', [
 config(['$routeProvider', function($routeProvider) {
   // Apparently it really is as simple as passing a variable through like this in routeProvider?
   // Thanks for being so clear, Angular documentation.
-  $routeProvider.when('/profile', {
-    templateUrl: 'partials/profile.html', 
-    controller: 'ProfileCtrl',
-    loginRequired: false
-  })
-  .when('/technical', {
-    templateUrl: 'partials/technical.html', 
-    controller: 'TechnicalCtrl',
-    loginRequired: false
-  })
-  .when('/experience', {
-    templateUrl: 'partials/experience.html', 
-    controller: 'ExperienceCtrl',
-    loginRequired: false
-  })
-  .when('/projects', {
-    templateUrl: 'partials/projects.html', 
-    controller: 'ProjectsCtrl',
-    loginRequired: false
-  })
-  .otherwise({redirectTo: '/profile'});
+  $routeProvider.
+    when('/profile', {
+      templateUrl: 'partials/profile.html', 
+      controller: 'AboutCtrl',
+      loginRequired: false
+    }).
+    when('/code', {
+      templateUrl: 'partials/code.html', 
+      controller: 'CodeCtrl',
+      loginRequired: false
+    }).
+    otherwise({redirectTo: '/profile'});
 }]);

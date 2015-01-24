@@ -2,9 +2,15 @@
 
 /* Services */
 
-
 angular.module('webPortfolio.services', []).
 value('version', '0.1')
+.factory('TimelineData', ['$resource',
+  function($resource){
+    
+    // Second argument must be an empty {} if you aren't including defaults, or weird stuff happens
+    return $resource('/json/gantchart.json', {}, { query: { method:'GET' } });
+  }
+])
 .factory('Session', 
   ['$cookieStore', '$http', 
   function ($cookieStore, $http) {
@@ -95,6 +101,7 @@ value('version', '0.1')
   function ($filter, $timeout) {
     return {
       config: function(dataobject, time_end, options) {
+
         var availability = dataobject; 
         var company = availability.company;
         var numberofrows = company.totalseries;
@@ -112,15 +119,15 @@ value('version', '0.1')
         // =====================================================================================================
         // Creates the formated object for Highcharts columnrange chart. Done. You have a timeline.
         for (var i = 0; i < series.length; i++) {
-          if (series[i].name === 'Up') {
+          if (series[i].name === 'Available') {
             
             var upHash = {"name":series[i].name, // Put Available as series name
-                          "data": series[i].data, // The range point data from JSON to be read by Highcharts
+                          "data": series[i].data, // The range point data from ICIS to be read by Highcharts
                           "color": options.availgreen.color, // Color variable
                           "pointWidth": options.serverWidth}; // Variable for width/thickness of range points
             var upDataLength = series[i].data.length; // Count how many individual range points for entire Available series
             chartdata.push(upHash);
-          } else if (series[i].name === 'Down') {
+          } else if (series[i].name === 'Unavailable') {
             
             var downHash = {"name":series[i].name, 
                             "data": series[i].data, 
@@ -166,7 +173,7 @@ value('version', '0.1')
                                 showInLegend:false};
             var unregstdDataLength = series[i].data.length;
             chartdata.push(unregstdHash);
-          } else if (series[i].name === 'No Data') {
+          } else if (series[i].name === 'No Availability') {
             
             var notconfigHash = {"name":options.notconfig.name, 
                                 "data": series[i].data, 
@@ -210,10 +217,14 @@ value('version', '0.1')
         for (var dl = 0; dl < upDataLength; dl++) {
           var xpos = upHash.data[dl].x;
           allPercentages[xpos].name = upHash.data[dl].name;
-          totalUpTime[xpos] += (upHash.data[dl].high - upHash.data[dl].low); // Add total milliseconds in data point to current totalUpTime xpos index value
-          var compare_uptime = $filter('number')( (upHash.data[dl].high / 10000 ), 0); // chopping off the 'seconds' of the epoch to compare with the new end time
-          var compare_endtime = $filter('number')((new_end_time[xpos] / 10000 ), 0); // chopping off the 'seconds' to compare with the final high point
-          allPercentages[xpos].is_available = (compare_uptime == compare_endtime) ? true : false; // Check if the endtime matches the final time in final xpos range point
+          // Add total milliseconds in data point to current totalUpTime xpos index value
+          totalUpTime[xpos] += (upHash.data[dl].high - upHash.data[dl].low); 
+          // chopping off the 'seconds' of the epoch to compare with the new end time
+          var compare_uptime = $filter('number')( (upHash.data[dl].high / 10000 ), 0); 
+          // chopping off the 'seconds' to compare with the final high point
+          var compare_endtime = $filter('number')((new_end_time[xpos] / 10000 ), 0); 
+          // Check if the endtime matches the final time in final xpos range point
+          allPercentages[xpos].is_available = (compare_uptime == compare_endtime) ? true : false; 
           allPercentages[xpos].has_data = true;
         }
 
@@ -246,12 +257,35 @@ value('version', '0.1')
           allPercentages[i].downtime_percent = $filter('number')(downtime_percent, 2);
         }
 
+        var count = 0;
+        while ( topThreePercents.length < 3 ){
+          
+          // Initial check, incase there are less than 3 servers/services,
+          //  because that index in allPercentages might be undefined
+          if ( allPercentages[count] == undefined ) {
+            topThreePercents.push({
+              'name':'No Data',
+              'has_data':false,
+              'uptime_percent':0,
+              'is_available':false,
+              'mainttime_percent':0,
+              'in_maintinence':false
+            });
+            count++;
+          } else if ( allPercentages[count].has_data == true ) {
+            topThreePercents.push(allPercentages[count]);
+            count++;
+          } else if ( allPercentages[count].has_data == false ) {
+            count++;
+          }
+        }
         var result =  {
           'company' : companyID,
           'id': company.id,
           'rows': (numberofrows),
           'series': chartdata,
-          'notconfigLength':notconfigLength
+          'notconfigLength':notconfigLength,
+          'allPercentages':allPercentages
         };
 
         return result;
@@ -453,6 +487,10 @@ value('version', '0.1')
         var defaultColumnRangeChart = {
           options: {
             chart: {
+              /*
+                http://www.highcharts.com/component/content/article/2-articles/news/47-ranges-polar-charts-and-gauges-released#ranges
+                http://highcharts.uservoice.com/forums/55896-general/suggestions/804783-gantt-chart
+              */
               type: 'columnrange',
               inverted: true,
               backgroundColor: 'rgba(0,0,0,0)',
@@ -460,23 +498,20 @@ value('version', '0.1')
               animation: false,
               shadow: false,
               minRange: 86400000,
-              spacingBottom: 15,
+              spacingBottom: 20,
               spacingLeft: 0,
               spacingRight: 0,
               spacingTop: 0,
-              marginBottom: null,
-              marginLeft: 0,
+              marginLeft: 10,
               marginRight: 0,
-              marginTop: 20,
-              height: '',
-              // zoomType: 'y',
+              marginTop: 0,
+              // height: '',
+              plotHeight: 0,
+              zoomType: 'y',
               // http://jsfiddle.net/Gv7Tg/27/ LINKED ZOOMS SAVE THIS
               events: {
                 load: function() {
-                  // $timeout(function(){
-                  //   $scope.updateChartData()              
-                  //   console.log('--- $timeout is working ---');
-                  // }, 5000);
+                  console.log('Chart loaded')
                 }
               },
             },
@@ -487,62 +522,50 @@ value('version', '0.1')
                 turboThreshold: 0, // disables threashhold, which restricted a series with more than 1000 data points from loading
                 grouping: false, // stacks all the data timeline points into one row
                 animation: false,    
-                pointPadding: 10,
+                pointPadding: 0,
                 groupPadding: 0,
                 borderWidth: 0,
                 minPointLength: 3,
-                events: {
-                  legendItemClick: function () {
-                    return false; // Turns off click to toggle legend series. If toggle is wanted, we need to create a 100% blank data point, similar to no-data bar
-                  }
-                },
+                events: {},
                 point: {
-                  events: {
-                    // click: function () {
-                    //   if (this.series.name == "Unmapped") {
-                    //     alert('You selected '+ this.name + ' in ' + this.series.name + ' data.');
-                    //   } else if (this.series.name != "Unmapped") {
-                    //     null
-                    //   };
-                    // }
-                  }
+                  events: {}
                 }
               }
             },
-            legend: {enabled: true},
+            legend: {
+              enabled: false
+            },
             tooltip:{
-              enabled: true,
+              backgroundColor: 'rgba(0, 0, 0, 1)',
+              borderRadius: 0,
+              useHTML: true,
+              borderWidth: 0,
+              style: {
+                fontSize: '1em',
+                fontFamily: 'Cuprum',
+                fontWeight: 'normal',
+                color: '#fff',
+                textDecoration: 'none',
+                padding: '0px',
+                zIndex: 20,
+              },
               followPointer: true,
               followTouchMove: false,
-              formatter: function() {
-                var difference = (this.point.high - this.point.low);
-                var header = '<b>'+ this.point.name +' - '+this.series.name +'</b>'+'<br/>'+ $filter('formatMilliseconds')(difference);
-                var body;
-
-                if (this.series.name == "Updating") {
-                  body = 'This data is being updated';
-                } else  {
-                  body = Highcharts.dateFormat('%a, %b %e, %Y, %H:%M',this.point.low)+'<br/>'+
-                         Highcharts.dateFormat('%a, %b %e, %Y, %H:%M',this.point.high);
-                }
-                return header+'<br/>'+body;
-              },
+              formatter: function() {},
               hideDelay: 0
+
+
             },
             scrollbar:{enabled: true}
           },
           series: [],
+          
           title: {
             text: 'Hello',
             style: {
               display: 'none'
             }
           },
-          // subtitle: {
-          //     text: '* zoom to 20 minutes, pan with "shift" key',
-          //     align: 'right',
-          //     x: -10
-          // },
           loading: false,
           xAxis: {
             type: 'category', // Pulls the 'name' from 'data'
@@ -551,19 +574,9 @@ value('version', '0.1')
             maxPadding: 0,
             minPadding: 0,
             labels: {
-              align: 'left',
-              enabled: true,
-              style: {
-                fontFamily: 'Open Sans Condensed',
-                fontWeight:'bold',
-                // color: '#FFFFFF',
-                // textShadow: '-1px -1px 0 #000,1px -1px 0 #000,-1px 1px 0 #000,1px 1px 0 #000 ', // black stroke
-                color: '#000',
-                textShadow: '-1px -1px 0 #fff,1px -1px 0 #fff,-1px 1px 0 #fff,1px 1px 0 #fff ', // white stroke
-                fontSize: '1.5em',
-                whiteSpace: 'nowrap' 
-              },
-              x: 20, // Pushes labels, like a margin-left
+              useHtml: true,
+              enabled: false,
+              format: '',
             },
           },
           yAxis: {
@@ -574,8 +587,8 @@ value('version', '0.1')
             labels: {rotation: -30},
             startOnTick: false,
             endOnTick: false,
-            maxPadding: 0.01,
-            minPadding: 0.01,
+            maxPadding: 0,
+            minPadding: 0,
                   minRange: 1200000,  // zoom stops at 1 minute range (milliseconds)
             stackLabels: {
               style:{color: 'black'},
@@ -584,10 +597,6 @@ value('version', '0.1')
             showFirstLabel: true
           },
           useHighStocks: false
-          //function (optional)
-          // func: function (chart) {
-          //   //setup some logic for the chart
-          // }
         };
         return defaultColumnRangeChart;
       },
@@ -657,4 +666,22 @@ value('version', '0.1')
       }
     }
   }
-);
+)
+.factory('RandomBits', 
+  [ '$filter', '$timeout',
+  function ($filter, $timeout) {
+    return {
+      facts: function(array) {
+        var limit = array.length;
+        var randomInt = Math.floor(0 + Math.random() * limit);
+        return array[randomInt];
+      },
+
+      coolthings: function(array) {
+        var limit = array.length;
+        var randomInt = Math.floor(0 + Math.random() * limit);
+        return array[randomInt];
+      }
+    }
+  }
+]);

@@ -39,6 +39,13 @@
     <script src="js/footable/footable.filter.js" type="text/javascript"></script>
     <script src="js/footable/footable.paginate.js" type="text/javascript"></script>
 
+    <script src="js/highcharts/highcharts-ng.js" type="text/javascript"></script>
+    <script src="js/highcharts/highcharts.js" type="text/javascript"></script>
+    <script src="js/highcharts/highcharts-more.js" type="text/javascript"></script>
+    <script src="js/highcharts/exporting.js" type="text/javascript"></script>
+    <script src="js/highcharts/regression.js" type="text/javascript"></script>
+    <script src="js/highcharts/modules-data.js" type="text/javascript"></script>
+
     <script src="js/counter_handler.js" type="text/javascript"></script>
     <!-- <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.1/js/bootstrap.min.js"></script> -->
 
@@ -52,21 +59,7 @@
 
     <!-- LESS always last -->
     <script src="js/less-1.7.0.js" type="text/javascript"></script>
-
-    <script type="text/javascript">
-      $(function() {
-        var banner = $(".jumbotron.banner").innerHeight();
-        console.log(banner);
-        $('.footable').footable();
-        $(".opaque").height(banner);
-        $(".image").height(banner);
-        $( window ).resize(function() {
-          banner = $(".jumbotron.banner").innerHeight();
-          $(".opaque").height(banner);
-          $(".image").height(banner);
-        });
-      });
-    </script>
+    <base href="/" />
   </head>
   <body ng-controller="ApplicationCtrl">
     <div class="jumbotron banner">
@@ -80,24 +73,30 @@
     <div class="opaque"></div>
     <div ui-scrollfix="+0" id="sticky" class="container-fluid">
       <div class="row">
-        <div class="col-sm-3 progress-bar-info" ng-class="{ active: activeTab === 'profile' }">
-          <a ng-click="scrollTo('start')" href="#/profile#start">Profile</a>
+        <div class="col-sm-2 about" ng-class="{ active: activeTab === 'about' }">
+          <a href="#/profile" ng-click="scrollTo('about')">Profile</a>
         </div>
-        <div class="col-sm-3 progress-bar-success" ng-class="{ active: activeTab === 'technical' }">
-          <a ng-click="scrollTo('start')" href="#/technical#start">Technical</a>
+        <div class="col-sm-2 technical" ng-class="{ active: activeTab === 'technical' }">
+          <a href="#/profile" ng-click="scrollTo('technical')">Technical</a>
         </div>
-        <div class="col-sm-3 progress-bar-warning" ng-class="{ active: activeTab === 'experience' }">
-          <a ng-click="scrollTo('start')" href="#/experience#start">Experience</a>
+        <div class="col-sm-2 experience" ng-class="{ active: activeTab === 'experience' }">
+          <a href="#/profile" ng-click="scrollTo('experience')">Experience</a>
         </div>
-        <div class="col-sm-3 progress-bar-danger" ng-class="{ active: activeTab === 'projects' }">
-          <a ng-click="scrollTo('start')" href="#/projects#start">Portfolio</a>
+        <div class="col-sm-2 projects" ng-class="{ active: activeTab === 'projects' }">
+          <a href="#/profile" ng-click="scrollTo('projects')">Portfolio</a>
+        </div>
+        <div class="col-sm-2 code" ng-class="{ active: activeTab === 'code' }">
+          <a href="#/code">Code</a>
+        </div>
+        <div class="col-sm-2 blank">
+          <a>&nbsp;</a>
         </div>
       </div>
     </div>
     <div class="container-fluid whitewash">
-      <div class="partial-container">
-        <div ng-view ng-animate class="angular-fade"></div>
-      </div>
+      <div ng-view ng-animate class="angular-fade"></div>
+      <!-- <div id='#profile' data-ng-include data-src="'partials/profile.html'" class="partial-container"></div> -->
+      
       <div class="container">
         <hr />
         <footer>
@@ -112,5 +111,19 @@
         </footer>
       </div> <!-- /container -->
     </div>
+    <script type="text/javascript">
+      $(function() {
+        var banner = $(".jumbotron.banner").innerHeight();
+        $('.footable').footable();
+        $(".opaque").height(banner);
+        $(".image").height(banner);
+        $( window ).resize(function() {
+          banner = $(".jumbotron.banner").innerHeight();
+          $(".opaque").height(banner);
+          $(".image").height(banner);
+        });
+      });
+    </script>
   </body>
+
 </html>
