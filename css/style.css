@@ -41,7 +41,6 @@ h6,
   font-family: 'Cuprum', sans-serif;
 }
 .banner {
-  height: 300px;
   position: absolute;
   width: 100%;
   color: #FFFFFF;
@@ -159,34 +158,34 @@ abbr.details {
   font-size: 1.25em;
   cursor: pointer;
 }
-.code_window pre {
+#code .code_window pre {
   max-height: 400px;
   overflow-y: scroll;
 }
-.graph {
+#code .graph {
   min-height: 400px;
 }
-.graph .render_chart {
+#code .graph .render_chart {
   padding-top: 0px;
   float: inherit;
   width: 100%;
 }
-#timeline_bar {
+#code #timeline_bar {
   font-size: .8em;
   height: 60px;
 }
-#timeline_graph {
+#code #timeline_graph {
   font-size: .8em;
 }
-#timeline_graph .timeline_labels {
+#code #timeline_graph .timeline_labels {
   background-color: white;
   padding: 5px;
 }
-#timeline_graph .timeline_labels .details {
+#code #timeline_graph .timeline_labels .details {
   border-bottom: none;
   cursor: context-menu;
 }
-#timeline_graph .timeline_labels .server_name_wrap {
+#code #timeline_graph .timeline_labels .server_name_wrap {
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;
@@ -194,23 +193,66 @@ abbr.details {
   font-weight: 700;
   border-bottom: none;
 }
-#timeline_graph .timeline_labels i.fa.is_available {
+#code #timeline_graph .timeline_labels i.fa.is_available {
   color: #47A247;
 }
-#timeline_graph .timeline_labels i.fa.not_available {
+#code #timeline_graph .timeline_labels i.fa.not_available {
   color: #BE5454;
   animation: blink 1.5s ease-in-out 0s infinite;
   -webkit-animation: blink 1.5s ease-in-out 0s infinite;
 }
-#timeline_graph .timeline_labels i.fa.in_maintinence {
+#code #timeline_graph .timeline_labels i.fa.in_maintinence {
   color: #e2aa00;
   text-shadow: 0px 1px 0px #555555, 1px 0px 0px #555555, 0px -1px 0px #555555, -1px 0px 0px #555555, 1px 1px 0px #555555, -1px -1px 0px #555555, -1px 1px 0px #555555, 1px -1px 0px #555555;
 }
-#timeline_graph .timeline_labels i.fa.no_data {
+#code #timeline_graph .timeline_labels i.fa.no_data {
   color: #cccccc;
 }
-#timeline_graph .timeline_labels .tooltip.in {
+#code #timeline_graph .timeline_labels .tooltip.in {
   overflow-wrap: break-word;
+}
+#code .table-controls {
+  padding: 10px initial;
+  font-size: 1em;
+}
+#code .table-controls button {
+  margin-top: -2px;
+}
+#code table {
+  font-size: 0.8em;
+}
+#code table .table_totals {
+  font-weight: 700;
+}
+#code table tr th.sortable.sort-asc .footable-sort-indicator:before {
+  content: '\f0d8';
+}
+#code table tr th.sortable.sort-desc .footable-sort-indicator:before {
+  content: '\f0d7';
+}
+#code table tr th.sortable:not(.sort-asc):not(.sort-desc) .footable-sort-indicator:before {
+  content: '\f0dc';
+}
+#code table tr th:not(.sortable) .footable-sort-indicator:before {
+  content: '';
+}
+#code table tr th > div {
+  display: inline-block;
+}
+#code table tr th,
+#code table tr td {
+  padding: 2px 10px;
+  vertical-align: top;
+  max-width: 100px;
+}
+#code table tr.ng-table-group + tr {
+  border-top: 1px solid #ddd;
+}
+#code table tr.ng-table-group td {
+  border-top: 0px solid #dddddd;
+}
+#code table tr:not(.ng-table-group) {
+  border-bottom: 1px solid #dddddd;
 }
 footer p a {
   color: inherit;

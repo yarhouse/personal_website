@@ -9,7 +9,7 @@
 
 */
 var staticData;
-var financialData;
+var financialData
 
 angular.module('webPortfolio.controllers', [])
 .run(['$anchorScroll', function($anchorScroll) {
@@ -19,15 +19,27 @@ angular.module('webPortfolio.controllers', [])
   ['$scope', '$timeout', '$window', '$modal', '$location', '$filter', '$anchorScroll',
   function($scope, $timeout, $window, $modal, $location, $filter, $anchorScroll) {
   
+  var banner = $(".jumbotron.banner").innerHeight();
+  $(".opaque").height(banner);
+  $(".image").height(banner);
+  $( window ).resize(function() {
+    banner = $(".jumbotron.banner").innerHeight();
+    $(".opaque").height(banner);
+    $(".image").height(banner);
+  });
+
+
   $scope.scrollTo = function(id) {
     $timeout(function() {
       $location.hash(id);
       $anchorScroll();
     }, 10);
   }
-  $timeout(function() {$('.footable').footable();}, 100);
+  $timeout(function() {$('.footable').footable();}, 1);
 }])
-.controller('ProfileCtrl', ['$scope', function($scope) {}])
+.controller('ProfileCtrl', ['$scope', '$timeout', function($scope, $timeout) {
+  $timeout(function() {$('.footable').footable();}, 1);
+}])
 .controller('AboutCtrl', ['$scope', 'RandomBits', function($scope, RandomBits) {
   	$scope.$emit('TabSelected', "profile");
     var myFacts = [ 
@@ -124,56 +136,19 @@ angular.module('webPortfolio.controllers', [])
     }
   ];
 }])
-.controller('ProjectsCtrl', ['$scope', '$timeout', 'ngTableParams', '$filter', '$sce',, function($scope, $timeout, ngTableParams, $filter, $sce) {
-
-  var schooling = 
-    {
-      "call_id":"30285",
-      "week":"05",
-      "date":"30-01-2014",
-      "current_status":"Closed",
-      "subject":"CMDB information for Dell equipment",
-      "invoiceable":"yes",
-      "hours_booked":"1.5",
-      "invoiceable_hours":"1.5",
-      "not_invoiceable_hours":"0",
-      "100": "1.00",
-      "150": "0.25",
-      "200": "0.00"
-    }
-
-
-  $scope.tableParams = new ngTableParams({
-    page: 1,            // show first page
-    count: 10,          // count per page
-    sorting: {
-      subject: 'asc'     // initial sorting
-    }
-  }, {
-    total: schooling.length, // length of data
-    getData: function($defer, params) {
-      var orderedData = params.sorting() ?
-              $filter('orderBy')(schooling, params.orderBy()) :
-              schooling;
-
-      $defer.resolve(orderedData.slice((params.page() - 1) * params.count(), params.page() * params.count()));
-  } 
+.controller('ProjectsCtrl', ['$scope', '$timeout', '$filter', function($scope, $timeout, $filter) {}])
+//  low-level AJAX resquest for a data object
+.run(function($http){
+  $http.get("../json/ngtableData.json").success(function(data){
+    financialData = data;
   });
-  $('.footable').footable({
-    breakpoints: {
-      phone:767,
-      tablet:992
-    }
-  });
+})
+.controller('CodeCtrl', 
+  ['$scope', '$filter', 'TimelineData', 'FormatJSON', 'Graph', 'ngTableParams', '$sce', '$timeout', 'ngTableColumn', 
+  function($scope, $filter, TimelineData, FormatJSON, Graph, ngTableParams, $sce, $timeout, ngTableColumn) {
 
-  $timeout(function() {
-    $scope.$watch('groupby', function(value){
-      $scope.tableParams.settings().groupBy = value;
-      $scope.tableParams.reload();
-    });
-  }, 10);
-}])
-.controller('CodeCtrl', ['$scope', '$filter', 'TimelineData', 'FormatJSON', 'Graph', function($scope, $filter, TimelineData, FormatJSON, Graph) {
+  // =====================================================================================================  
+  // format json highcharts
 
   var eachRowHeight     = 50; // HIGHLY RECOMMENDED THAT THIS VALUE STAYS ABOVE 49px
   var environmentWidth  = 40;
@@ -240,4 +215,62 @@ angular.module('webPortfolio.controllers', [])
   $scope.consolePrint = function(param){
     console.log(param);
   }
+
+
+  // =====================================================================================================
+  // ng table footable
+  
+  var ngtableData = financialData.data
+  $scope.groupby = 'none'
+  $scope.tableParams = new ngTableParams({
+    page: 1,            // show first page
+    count: 10,          // count per page
+    sorting: {
+      subject: 'asc'     // initial sorting
+    }
+  }, {
+    total: ngtableData.length, // length of data
+    getData: function($defer, params) {
+      var orderedData = params.sorting() ?
+              $filter('orderBy')(ngtableData, params.orderBy()) :
+              ngtableData;
+
+      $defer.resolve(orderedData.slice((params.page() - 1) * params.count(), params.page() * params.count()));
+      $timeout(function() {
+        $('.footable').trigger('footable_redraw','footable_toggle_row');
+      }, 0);
+      $timeout(function() {
+        $scope.columnSpan = $('.footable tbody:first-of-type tr:first-of-type + tr.primary-row:not(.ng-table-group) td.footable-visible:not(.ng-hide)').length;
+      }, 10);
+    },
+    filterDelay: 10
+  });
+  $('.footable').footable({
+    breakpoints: {
+      phone:767,
+      tablet:992
+    }
+  });
+
+  
+  $scope.totalHours = function(key){
+    return ngTableColumn.total(ngtableData, key);
+  }
+
+  // This was planned for possibly trying to display groupby totals
+  // $scope.getGroup_NIH = function(){ 
+  //   var total = 0;
+  //   for(var i = 0; i < $scope.group.value.length; i++){
+  //       var product = $scope.group.value[i];
+  //       total += (product.not_invoiceable_hours * 1);
+  //   }
+  //   return total;        
+  // };
+
+  $timeout(function() {
+    $scope.$watch('groupby', function(value){
+      $scope.tableParams.settings().groupBy = value;
+      $scope.tableParams.reload();
+    });
+  }, 10);
 }]);

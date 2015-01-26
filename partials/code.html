@@ -1,5 +1,6 @@
 <div id="code" class="container" ng-controller="CodeCtrl">
   <h3><i class="fa fa-wrench fa-border"></i> Code Examples</h3>
+  
   <div class="row">
     <h4><i class="fa fa-code fa-border"></i> FormatJSON and Highcharts</h4>
     <div class="col-sm-12 col-md-8">
@@ -8,7 +9,7 @@
       <p></p>
     </div>
     <div class="col-sm-12 col-md-4">
-      <p>Feel free to look at the JSON object for a single company with only a few servers, then imagine that for about 100 more. You can view both the pre-formated and the results that feed into the Gantt chart below.</p>
+      <p>Feel free to look at the JSON object for a single company with only a few servers, then imagine that for about 100 more companies and thousands more in data points. You can view both the pre-formated and the results that feed into the Gantt chart below.</p>
       <p><span class="btn btn-default" ng-click="consolePrint(orgJson)"><i class="fa fa-print"></i></span> Print original JSON to Developer Tools console</p>
       <p><span class="btn btn-default" ng-click="consolePrint(newJson)"><i class="fa fa-print"></i></span> Print FormatJSON to Developer Tools console</p>
       
@@ -20,12 +21,12 @@
   <hr />
   <div class="row">
     <div class="col-sm-12">
-      <p>This is a sidebar design that I created custom for the Gantt chart, to display the percentage of uptime a server had during a selected date range (non functional in demo). It also allowed left/right highlighting zoom, and when you click on a data point a deeper set of information is passed to this div above the chart, which also would become sticky (like my nav menu) as you scroll down the chart.</p><p>My concept here was to make sure that a user was able to pinpoint the data they'd want to inspect, and pass more information only when they want it instead of being forced to see everything all the time.</p>
+      <p>This is a sidebar design that I created custom for the Gantt chart, to display the percentage of uptime a server had during a selected date range (non functional in demo). It also allowed left/right highlighting zoom, and when you click on a data point a deeper set of information is passed to this div above the chart, which also would become sticky (like my nav menu) as you scroll down the chart. Highcharts doesn't offer anything like this with their charts, especially Gantts. It required a good amount of pixel perfect testing to match Boootstrap rows in the sidebar with the svg of the datapoint rows</p><p>My concept here was to make sure that a user was able to pinpoint the data they'd want to inspect, and pass more information only when they want it instead of being forced to see everything all the time. A future plan would be to seperate each server/host timeline row into its own miniture chart, allowing this display to make use of the ngModel filtering system.</p>
     </div>
   </div>
   <div id='timeline_bar' class="row">
     <div id='timeline_total' class="col-md-2 hidden-sm hidden-xs"></div>
-    <div id='timeline_tooltip' class="col-sm-8 "><h4>Select a datapoint of time to see more information about it</h4></div>
+    <div id='timeline_tooltip' class="col-md-8 "><h4>Select a datapoint of time to see more information about it</h4></div>
   </div>
   <div id="timeline_graph" class="row">
     <div class="col-xs-4 col-sm-3 col-md-2" style="padding-right:0px">
@@ -36,9 +37,9 @@
           </div>
         </div>
         <div class="row">
-          <div class="col-xs-6 col-sm-4 uptime_percent"><span class="uptime_percent">{{ data.uptime_percent }}%</span></div>
-          <div class="col-xs-6 col-sm-8 currently">
-            <span class="hidden-xs">Currently: </span>
+          <div class="col-xs-6 col-sm-3 uptime_percent"><span class="uptime_percent">{{ data.uptime_percent }}%</span></div>
+          <div class="col-xs-6 col-sm-9 currently">
+            <span class="hidden-xs hidden-sm">Currently: </span>
             <i class='fa ' ng-class="{
               'fa-check-square is_available': data.is_available == true && data.has_data == true, 
               'fa-minus-circle not_available': data.is_available == false && data.has_data == true,
@@ -56,5 +57,173 @@
     <div class="graph col-xs-8 col-sm-9 col-md-10" style="padding-left:0px">       
       <highchart id="timeline" class="render_chart" config="timelineChartConfig" ></highchart>
     </div>
-  </div>  
+  </div>
+
+  <div class="row">
+    <h4><i class="fa fa-code fa-border"></i> ngTable + Footable = Best Table</h4>
+    <div class="col-sm-12 col-md-8">
+      <p>Before I discovered the wonders of AngularJS, I focused on jQuery. In my hunt to make everything responsive, I cam across an awesome plugin called Footable. It was ocassionally buggy, but not so much that made it unusable. Cells would be hidden on media queries for static viewport sizes, with the hidden cell data being repopulated in a collaspable row under the parent row. It is what I use for my Education table in my Profile.</p>
+      <p>ngTable was far more useful for me than ngGrid proved to be. Aside from the normal filtering and sorting, ngTable has a column grouping aspect that really met some needs for a planned Finacial table. But it severly lacked responsive capabilities, and I wasn't about to go the Bottstrap route of an overflow-y side scrolling div to hold a table. I would be cheating myself to not make a wholly responsive setup for the Finacial table.</p>
+      <p></p>
+    </div>
+    <div class="col-sm-12 col-md-4">
+      <p>Feel free to look at the JSON object for a single company with only a few servers, then imagine that for about 100 more. You can view both the pre-formated and the results that feed into the Gantt chart below.</p>
+      <p><span class="btn btn-default" ng-click="consolePrint(orgJson)"><i class="fa fa-print"></i></span> Print original JSON to Developer Tools console</p>
+      <p><span class="btn btn-default" ng-click="consolePrint(newJson)"><i class="fa fa-print"></i></span> Print FormatJSON to Developer Tools console</p>
+      
+    </div>
+    <div class="col-sm-12">
+      <div id='test' data-ng-include data-src="'partials/snipets/formatJson.html'" class="partial-container code_window"></div>
+    </div>
+  </div>
+  <hr />
+  <div class="row table-controls">
+    <div class="col-sm-6 col-md-4">
+      Group by: 
+      <select ng-model="groupby">
+          <option value="none">None</option>
+          <option value="current_status">Current Status</option>
+          <option value="week">Week</option>
+      </select>
+      <button ng-click="tableParams.sorting({});groupby = 'none'" class="btn btn-primary btn-sm">Clear all sorting</button>
+    </div>
+    <div class="col-sm-6 col-md-4">
+      <input placeholder="Search" class="search" type="text" ng-model="myFilterVariable"/>
+      <button ng-click="myFilterVariable = undefined" class="btn btn-primary btn-sm">Clear filter</button>
+    </div>
+  </div>    
+  <table ng-table="tableParams" class="footable table">
+    <thead>
+      <tr class="footable-group-row">
+        <th data-group="blank" colspan="9"></th>
+        <th data-group="Rate Specifications" colspan="4">Rate Specifications</th>
+      </tr>
+      <tr>
+        <th class="sortable" ng-class="{
+          'sort-asc': tableParams.isSortBy('call_id', 'asc'),
+          'sort-desc': tableParams.isSortBy('call_id', 'desc')
+          }"
+            ng-click="tableParams.sorting({'call_id' : tableParams.isSortBy('call_id', 'asc') ? 'desc' : 'asc'})">
+            <div>Call ID</div>
+        </th>
+        <th class="sortable" ng-class="{
+          'sort-asc': tableParams.isSortBy('date', 'asc'),
+          'sort-desc': tableParams.isSortBy('date', 'desc')
+          }"
+            ng-click="tableParams.sorting({'date' : tableParams.isSortBy('date', 'asc') ? 'desc' : 'asc'})">
+            <div>Date</div>
+        </th>
+        <th class="sortable" ng-class="{
+          'sort-asc': tableParams.isSortBy('week', 'asc'),
+          'sort-desc': tableParams.isSortBy('week', 'desc')
+          }"
+            ng-click="tableParams.sorting({'week' : tableParams.isSortBy('week', 'asc') ? 'desc' : 'asc'})"
+            ng-hide="groupby == 'week' ">
+            <div>Week</div>
+        </th>
+        <th class="sortable" ng-class="{
+          'sort-asc': tableParams.isSortBy('current_status', 'asc'),
+          'sort-desc': tableParams.isSortBy('current_status', 'desc')
+          }"
+            ng-click="tableParams.sorting({'current_status' : tableParams.isSortBy('current_status', 'asc') ? 'desc' : 'asc'})"
+            ng-hide="groupby == 'current_status' ">
+            <div>Status</div>
+        </th>
+        <th class="sortable" ng-class="{
+          'sort-asc': tableParams.isSortBy('subject', 'asc'),
+          'sort-desc': tableParams.isSortBy('subject', 'desc')
+          }"
+            ng-click="tableParams.sorting({'subject' : tableParams.isSortBy('subject', 'asc') ? 'desc' : 'asc'})" 
+            data-hide="phone,tablet">
+            <div>Subject</div>
+        </th>
+        <th  class="sortable active" ng-class="{
+          'sort-asc': tableParams.isSortBy('invoiceable', 'asc'),
+          'sort-desc': tableParams.isSortBy('invoiceable', 'desc')
+          }"
+            ng-click="tableParams.sorting({'invoiceable' : tableParams.isSortBy('invoiceable', 'asc') ? 'desc' : 'asc'})" 
+            data-hide="phone">
+            <div>Inv</div>
+        </th>
+        <th class="sortable warning" ng-class="{
+          'sort-asc': tableParams.isSortBy('hours_booked', 'asc'),
+          'sort-desc': tableParams.isSortBy('hours_booked', 'desc')
+          }"
+            ng-click="tableParams.sorting({'hours_booked' : tableParams.isSortBy('hours_booked', 'asc') ? 'desc' : 'asc'})" 
+            data-hide="phone">
+            <div>HrsBkd</div>
+        </th>
+        <th class="sortable info" ng-class="{
+          'sort-asc': tableParams.isSortBy('invoiceable_hours', 'asc'),
+          'sort-desc': tableParams.isSortBy('invoiceable_hours', 'desc')
+          }"
+            ng-click="tableParams.sorting({'invoiceable_hours' : tableParams.isSortBy('invoiceable_hours', 'asc') ? 'desc' : 'asc'})" 
+            data-hide="phone">
+            <div>InvHrs</div>
+        </th>
+        <th class="sortable danger" ng-class="{
+          'sort-asc': tableParams.isSortBy('not_invoiceable_hours', 'asc'),
+          'sort-desc': tableParams.isSortBy('not_invoiceable_hours', 'desc')
+          }"
+            ng-click="tableParams.sorting({'not_invoiceable_hours' : tableParams.isSortBy('not_invoiceable_hours', 'asc') ? 'desc' : 'asc'})" 
+            data-hide="phone">
+            <div>Non-InvHrs</div>
+        </th>
+        <th data-hide="phone,tablet" class="text-right success"
+            data-group="Rate Specifications">
+            <div>100%</div>
+        </th>
+        <th data-hide="phone,tablet" class="text-right success"
+            data-group="Rate Specifications">
+            <div>150%</div>
+        </th>
+        <th data-hide="phone,tablet" class="text-right success"
+            data-group="Rate Specifications">
+            <div>200%</div>
+        </th>
+        <th data-hide="phone,tablet" class="text-right success"
+            data-group="Rate Specifications">
+            <div>250%</div>
+        </th>
+      </tr>
+    </thead>
+    <tbody ng-repeat="group in $groups">
+      <tr class="ng-table-group" ng-class="{ hidden: groupby === 'none' }">
+        <td colspan="{{columnSpan}}">
+          <a href="" ng-click="group.$hideRows = !group.$hideRows">
+            <span class="fa" ng-class="{ 'fa-chevron-right': group.$hideRows, 'fa-chevron-down': !group.$hideRows }"></span> <strong>{{ group.value }}</strong>
+          </a>
+        </td>
+      </tr>
+      <tr ng-hide="group.$hideRows" ng-repeat="customer in group.data|filter:myFilterVariable" class="primary-row">
+        <td class="text-center" data-title="'Call ID'" sortable="'customer'">{{customer.call_id}}</td>
+        <td class="text-center" data-title="'Date'" sortable="'date'">{{customer.date | date:'shortDate' }}</td>
+        <td class="text-center" data-title="'Week '" sortable="'week'" ng-hide="groupby == 'week' ">{{customer.week}}</td>
+        <td class="text-center" data-title="'Status'" sortable="'current_status'" ng-hide="groupby == 'current_status' ">{{customer.current_status}}</td>
+        <td class="" data-title="'Subject'" sortable="'subject'"style="max-width:200px" >{{customer.subject}}</td>
+        <td class="text-center active" data-title="'Inv'" sortable="'invoiceable'">{{customer.invoiceable}}</td>
+        <td class="text-right warning" data-title="'HrsBkd'" sortable="'hours_booked'">{{customer.hours_booked}}</td>
+        <td class="text-right info" data-title="'InvHrs'" sortable="'invoiceable_hours'">{{customer.invoiceable_hours}}</td>
+        <td class="text-right danger" data-title="'Non-InvHrs'" sortable="'not_invoiceable_hours'">{{customer.not_invoiceable_hours}}</td>
+        <td class="text-right success" sortable="'100'">{{customer.huhned}}</td>
+        <td class="text-right success" sortable="'150'">{{customer.onefidy}}</td>
+        <td class="text-right success" sortable="'200'">{{customer.twohuhned}}</td>
+        <td class="text-right success" sortable="'250'">{{customer.twofidy}}</td>
+      </tr>
+    </tbody>
+    <tfoot>
+      <tr class="table_totals active">
+        <td data-title="'Call ID'" sortable="'customer'"></td>
+        <td data-title="'Date'" sortable="'date'"></td>
+        <td data-title="'Week '" sortable="'week'" ng-hide="groupby == 'week' " ></td>
+        <td data-title="'Status'" sortable="'current_status'" ng-hide="groupby == 'current_status' "></td>
+        <td data-title="'Subject'" sortable="'subject'" style="max-width:200px" ></td>
+        <td data-title="'Inv'" sortable="'invoiceable'" style="padding-right:20px;" class="text-right active">Totals:</td>
+        <td class="text-right warning" >{{ totalHours('hours_booked') }}</td>
+        <td class="text-right info" >{{ totalHours('invoiceable_hours') }}</td>
+        <td class="text-right danger" >{{ totalHours('not_invoiceable_hours') }}</td>
+        <td class="text-right"  colspan="4"><p ng-bind-html="myHTML"></p></td>
+      </tr>
+    </tfoot>
+  </table>
 </div>

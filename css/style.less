@@ -21,7 +21,7 @@ h6, .h6{font-size: 0.5em;.titlefont();}
 
 
 .banner{
-  height:300px;
+  // height:300px;
   position: absolute;
   width: 100%;
   color: #FFFFFF;
@@ -118,51 +118,81 @@ abbr.details {cursor: help; border-bottom: 2px black dotted;}
 #overview p{padding: 10px;}
 #technical dl{margin-bottom: 0px;}
 #experience h4.panel-title {font-size: 1.25em; cursor: pointer;}
+#code{
+  .code_window pre{
+    max-height: 400px;
+    overflow-y: scroll;
+  }
+  .graph{
+    min-height:400px;
+    .render_chart {padding-top: 0px; float: inherit;width: 100%;}
+  }
+  #timeline_bar{font-size: .8em;height:60px;}
+  #timeline_graph{
+    font-size: .8em;
+    .timeline_labels{
+      background-color: white;
+      padding: 5px;
+      .details{border-bottom: none;cursor:context-menu;}
 
-.code_window pre{
-  max-height: 400px;
-  overflow-y: scroll;
-}
-.graph{
-  min-height:400px;
-  .render_chart {padding-top: 0px; float: inherit;width: 100%;}
-}
-#timeline_bar{font-size: .8em;height:60px;}
-#timeline_graph{
-  font-size: .8em;
-  .timeline_labels{
-    background-color: white;
-    padding: 5px;
-    .details{border-bottom: none;cursor:context-menu;}
-
-    .server_name_wrap{
-      overflow: hidden;
-      text-overflow: ellipsis;
-      white-space: nowrap;
-      margin:0px;
-      font-weight: 700;
-      border-bottom: none;
-    } 
-    i.fa{
-      &.is_available{color:#47A247;}
-      &.not_available{
-        color:#BE5454;
-        animation: blink 1.5s ease-in-out 0s infinite;
-        -webkit-animation: blink 1.5s ease-in-out 0s infinite;}
-      &.in_maintinence{
-        color:rgba(226, 170, 0, 1);
-        text-shadow: 0px 1px 0px #555,
-             1px 0px 0px #555,
-             0px -1px 0px #555,  
-             -1px 0px 0px #555,
-             1px 1px 0px #555, 
-             -1px -1px 0px #555,
-             -1px 1px 0px #555,
-             1px -1px 0px #555;
+      .server_name_wrap{
+        overflow: hidden;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+        margin:0px;
+        font-weight: 700;
+        border-bottom: none;
+      } 
+      i.fa{
+        &.is_available{color:#47A247;}
+        &.not_available{
+          color:#BE5454;
+          animation: blink 1.5s ease-in-out 0s infinite;
+          -webkit-animation: blink 1.5s ease-in-out 0s infinite;}
+        &.in_maintinence{
+          color:rgba(226, 170, 0, 1);
+          text-shadow: 0px 1px 0px #555,
+               1px 0px 0px #555,
+               0px -1px 0px #555,  
+               -1px 0px 0px #555,
+               1px 1px 0px #555, 
+               -1px -1px 0px #555,
+               -1px 1px 0px #555,
+               1px -1px 0px #555;
+        }
+        &.no_data{color: #CCC}
       }
-      &.no_data{color: #CCC}
+      .tooltip.in{overflow-wrap: break-word;}
     }
-    .tooltip.in{overflow-wrap: break-word;}
+  }
+  .table-controls{padding: 10px initial;font-size: 1em;button{margin-top: -2px;}}
+  table{
+    .green{}
+    .red{}
+    .blue{}
+    .yellow{}
+    font-size: 0.8em;
+    .table_totals{font-weight: 700;}
+    //tbody, thead, tfoot{border-top:1px solid #ddd}
+    tr{
+      th{
+        &.sortable{
+          &.sort-asc{.footable-sort-indicator:before{content:'\f0d8';}}
+          &.sort-desc{.footable-sort-indicator:before{content:'\f0d7';}}
+          &:not(.sort-asc):not(.sort-desc){.footable-sort-indicator:before{content:'\f0dc';}}
+        }
+        &:not(.sortable){.footable-sort-indicator:before{content:'';}}
+         > div{display:inline-block;}
+      }
+      th, td{padding:2px 10px;;vertical-align:top;max-width: 100px;}
+
+      // &.ng-table-group{background-color: yellow;}
+      &.ng-table-group{ 
+        + tr{border-top:1px solid #ddd;} 
+        td{border-top: 0px solid #dddddd; }
+      }
+      &:not(.ng-table-group){border-bottom:1px solid #ddd}
+    }
   }
 }
 footer p a{color: inherit;}

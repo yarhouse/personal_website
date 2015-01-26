@@ -117,7 +117,7 @@ value('version', '0.1')
         var topThreePercents = new Array();
 
         // =====================================================================================================
-        // Creates the formated object for Highcharts columnrange chart. Done. You have a timeline.
+        // Creates the formated object for Highcharts columnrange chart.
         for (var i = 0; i < series.length; i++) {
           if (series[i].name === 'Available') {
             
@@ -201,13 +201,14 @@ value('version', '0.1')
           });
         };
         
-        // Creating a new endtime for servers with unmapped time
+        // Creating a new endtime for servers with unmapped time, as required by client.
+        // Unmapped time was to not ever count against a percentage
         for (var dl = 0; dl < unmappedDataLength; dl++) { 
           var xpos = unmappedHash.data[dl].x;
           new_end_time[xpos] = unmappedHash.data[dl].low;
         }
         
-        // This loop could be wholely unnessicary depending if we do nothing with 'No Data' series
+        // This loop could be wholely unnecessary depending if we do nothing with 'No Data' series
         for (var dl = 0; dl < notconfigLength; dl++) {
           var xpos = notconfigHash.data[dl].x;
           allPercentages[xpos].name = notconfigHash.data[dl].name;
@@ -228,7 +229,8 @@ value('version', '0.1')
           allPercentages[xpos].has_data = true;
         }
 
-        // A complete run for Unavailabile has to be done as well, incase there is a 100% unavailable server, the uptime function above would comepltely miss it
+        // A complete run for Unavailabile has to be done as well, incase there is a 
+        // 100% unavailable server, the uptime function above would comepltely miss it
         for (var dl = 0; dl < downDataLength; dl++) { 
           var xpos = downHash.data[dl].x;
           allPercentages[xpos].name = downHash.data[dl].name;
@@ -236,7 +238,8 @@ value('version', '0.1')
           allPercentages[xpos].has_data = true;
         }
 
-        // Maintinence has to be run for its own calculations outside of up/down, since servers can be in maintinence while in either up/down state
+        // Maintinence has to be run for its own calculations outside of up/down, 
+        // since servers can be in maintinence while in either up/down state
         for (var dl = 0; dl < maintDataLength; dl++) {
           var xpos = maintHash.data[dl].x;
           allPercentages[xpos].name = maintHash.data[dl].name;
@@ -257,11 +260,14 @@ value('version', '0.1')
           allPercentages[i].downtime_percent = $filter('number')(downtime_percent, 2);
         }
 
+        // This small portion was to grab the first three servers that had actual data
+        // ignoring any that were marked as false OR leaving a default hash if the 
+        // company had fewer than three servers. This was displayed at the top of the view.
         var count = 0;
         while ( topThreePercents.length < 3 ){
           
           // Initial check, incase there are less than 3 servers/services,
-          //  because that index in allPercentages might be undefined
+          // that index[count] in allPercentages might be undefined
           if ( allPercentages[count] == undefined ) {
             topThreePercents.push({
               'name':'No Data',
@@ -290,7 +296,6 @@ value('version', '0.1')
 
         return result;
       },
-
       counter: function(index, param) {
 
         var divID = '#server_'+index+'_availability'
@@ -684,4 +689,17 @@ value('version', '0.1')
       }
     }
   }
-]);
+])
+.factory('ngTableColumn',
+  function() {
+    return {
+      total: function(obj, key) {
+        var total = 0;
+        for(var i = 0; i < obj.length; i++){
+          total += (obj[i][key]);
+        }
+        return total.toFixed(2);
+      }
+    }
+  }
+);
