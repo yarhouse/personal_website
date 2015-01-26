@@ -1,20 +1,17 @@
 'use strict';
 
-/* Controllers */
-
-/* section list:
- ************************************
-
- * Dashboard
-
-*/
-var staticData;
+var aboutMeData;
 var financialData
 
 angular.module('webPortfolio.controllers', [])
 .run(['$anchorScroll', function($anchorScroll) {
   $anchorScroll.yOffset = 40;   // always scroll by 30 extra pixels
 }])
+// .run(function($http){
+//   $http.get("../json/aboutMeData.json").success(function(data){
+//     aboutMeData = data;
+//   });
+// })
 .controller('ApplicationCtrl', 
   ['$scope', '$timeout', '$window', '$modal', '$location', '$filter', '$anchorScroll',
   function($scope, $timeout, $window, $modal, $location, $filter, $anchorScroll) {

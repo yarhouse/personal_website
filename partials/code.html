@@ -1,12 +1,17 @@
 <div id="code" class="container" ng-controller="CodeCtrl">
   <h3><i class="fa fa-wrench fa-border"></i> Code Examples</h3>
-  
+  <div class="row">
+    <div class="col-sm-12">
+      <p>As I create more dynamic content and interface tools, I will update this code snipet page with those that are display-ready.</p>
+      <p>If you are a potential hiring or development manager, thank you very much for taking the time to see what my code skills could offer your team. If there is something you were hoping to see from me, please shoot me an email. I have likely created something that would meet your query and I just have not gotten a chance to make it display-ready with examples and explanations.</p>
+    </div>
+  </div>
   <div class="row">
     <h4><i class="fa fa-code fa-border"></i> FormatJSON and Highcharts</h4>
     <div class="col-sm-12 col-md-8">
       <p>This example is an AngularJS service I had to create to format a large JSON object returned from a GET request. The Ruby server acted as a middleman for the up/down time service that tracked its time in millseconds. While the formating could have been done completely on the server side by a back-end engineer, it wasn't, so it became my task to properly format the data to feed into Highcharts via Javascript.</p>
       <p>The difficulty came with Highcharts, actually. Since the task was to create a timeline that would present data, I natrually chose a Gantt chart, unaware of how little support Highcharts offered for Gantts (you actaully need an optional Highcharts library to use one).</p>
-      <p></p>
+      
     </div>
     <div class="col-sm-12 col-md-4">
       <p>Feel free to look at the JSON object for a single company with only a few servers, then imagine that for about 100 more companies and thousands more in data points. You can view both the pre-formated and the results that feed into the Gantt chart below.</p>
@@ -61,19 +66,18 @@
 
   <div class="row">
     <h4><i class="fa fa-code fa-border"></i> ngTable + Footable = Best Table</h4>
-    <div class="col-sm-12 col-md-8">
-      <p>Before I discovered the wonders of AngularJS, I focused on jQuery. In my hunt to make everything responsive, I cam across an awesome plugin called Footable. It was ocassionally buggy, but not so much that made it unusable. Cells would be hidden on media queries for static viewport sizes, with the hidden cell data being repopulated in a collaspable row under the parent row. It is what I use for my Education table in my Profile.</p>
+    <div class="col-sm-12 col-md-6">
+      <p>Before I discovered the wonders of AngularJS, I focused on jQuery. In my hunt to make everything responsive, I came across an awesome plugin called Footable. It was ocassionally buggy, but not so much that made it unusable. Cells would be hidden on media queries for static viewport sizes, with the hidden cell data being repopulated in a collaspable row under the parent row. It is what I use for my Education table in my Profile.</p>
+    </div>
+    <div class="col-sm-12 col-md-6">
       <p>ngTable was far more useful for me than ngGrid proved to be. Aside from the normal filtering and sorting, ngTable has a column grouping aspect that really met some needs for a planned Finacial table. But it severly lacked responsive capabilities, and I wasn't about to go the Bottstrap route of an overflow-y side scrolling div to hold a table. I would be cheating myself to not make a wholly responsive setup for the Finacial table.</p>
       <p></p>
     </div>
-    <div class="col-sm-12 col-md-4">
-      <p>Feel free to look at the JSON object for a single company with only a few servers, then imagine that for about 100 more. You can view both the pre-formated and the results that feed into the Gantt chart below.</p>
-      <p><span class="btn btn-default" ng-click="consolePrint(orgJson)"><i class="fa fa-print"></i></span> Print original JSON to Developer Tools console</p>
-      <p><span class="btn btn-default" ng-click="consolePrint(newJson)"><i class="fa fa-print"></i></span> Print FormatJSON to Developer Tools console</p>
-      
+    <div class="col-sm-12 ">
+      <p>The table is one of my proudest UI builds at this time. There are still improvments I'd like to make in the future, because no artist feels a work is complete. However, it can handle any size data object thrown at it with relative ease, allowing large data sets to still render smart and clean into a mobile or tablet browser.</p>      
     </div>
     <div class="col-sm-12">
-      <div id='test' data-ng-include data-src="'partials/snipets/formatJson.html'" class="partial-container code_window"></div>
+      <div id='test' data-ng-include data-src="'partials/snipets/ngFooTable.html'" class="partial-container code_window"></div>
     </div>
   </div>
   <hr />
