@@ -516,7 +516,7 @@ value('version', '0.1')
               // http://jsfiddle.net/Gv7Tg/27/ LINKED ZOOMS SAVE THIS
               events: {
                 load: function() {
-                  console.log('Chart loaded')
+                  // console.log('Chart loaded')
                 }
               },
             },
