@@ -225,10 +225,10 @@ abbr.details {
   font-weight: 700;
 }
 #code table tr th.sortable.sort-asc .footable-sort-indicator:before {
-  content: '\f0d8';
+  content: '\f0d7';
 }
 #code table tr th.sortable.sort-desc .footable-sort-indicator:before {
-  content: '\f0d7';
+  content: '\f0d8';
 }
 #code table tr th.sortable:not(.sort-asc):not(.sort-desc) .footable-sort-indicator:before {
   content: '\f0dc';
@@ -317,19 +317,4 @@ footer i.fa.disabled {
 /* Large devices (large desktops, 1200px and up) */
 .no-bullets {
   list-style: none;
-}
-.footable > thead > tr > th > span.footable-sort-indicator:before {
-  content: "\f0dc";
-}
-.footable > thead > tr > th.footable-sorted-desc > span.footable-sort-indicator:before {
-  content: "\f0d8";
-}
-.footable > thead > tr > th.footable-sorted > span.footable-sort-indicator:before {
-  content: "\f0d7";
-}
-.footable.breakpoint.toggle-arrow-small > tbody > tr > td > span.footable-toggle:before {
-  content: "\f0da";
-}
-.footable.breakpoint.toggle-arrow-small > tbody > tr.footable-detail-show > td > span.footable-toggle:before {
-  content: "\f0d7";
 }
